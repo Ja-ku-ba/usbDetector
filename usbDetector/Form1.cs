@@ -1,17 +1,17 @@
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using UsbDetector;
 
 namespace usbDetector
 {
     public partial class Form1 : Form
     {
-        ListBox listBox1 = new ListBox();
+        private ListBox listBox1;
+
         private const int DBT_DEVICEARRIVAL = 0x8000;
         private const int DBT_DEVICEREMOVECOMPLETE = 0x8004;
         private const int DBT_DEVTYP_VOLUME = 0x00000002;
         private const int WM_DEVICECHANGE = 0x219;
-    
-
 
         protected override void WndProc(ref Message m)
         {
@@ -24,15 +24,16 @@ namespace usbDetector
                             int devType = Marshal.ReadInt32(m.LParam, 4);
                             if (devType == DBT_DEVTYP_VOLUME)
                             {
-                                listBox1.Items.Add("USB Inserted");
-                                DevBroadcastVolume vol = (DevBroadcastVolume)
-                                Marshal.PtrToStructure(m.LParam, typeof(DevBroadcastVolume));
-                                listBox1.Items.Add("Mask is " + vol.Mask);
-                                listBox1.Items.Add("Letter is " + GetLetter(vol.Mask));
+                                listBox1.Items.Add("Usb pod³¹czone");
+                                DevBroadcastVolume vol = (DevBroadcastVolume)Marshal.PtrToStructure(m.LParam, typeof(DevBroadcastVolume));
+                                listBox1.Items.Add("Maska: " + vol.Mask);
+                                listBox1.Items.Add("Litera: " + GetLetter(vol.Mask));
+                                listBox1.Items.Add("----------");
                             }
                             break;
                         case DBT_DEVICEREMOVECOMPLETE:
-                            listBox1.Items.Add("Device Removed");
+                            listBox1.Items.Add("Usb od³¹czono");
+                            listBox1.Items.Add("----------");
                             break;
                     }
                     break;
@@ -59,12 +60,11 @@ namespace usbDetector
         public Form1()
         {
             InitializeComponent();
+            
+            listBox1 = new ListBox();
+            listBox1.Size = new System.Drawing.Size(250, 250);
+
             Controls.Add(listBox1);
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }
